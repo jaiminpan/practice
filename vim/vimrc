@@ -1,0 +1,46 @@
+
+syntax enable
+set background=dark
+"let g:solarized_termcolors=256
+colorscheme solarized
+"colorscheme=evening
+"colorscheme=desert
+
+"common conf {
+set autoindent
+set backspace=2
+set showmatch
+set laststatus=2
+
+set expandtab
+set tabstop=4
+set shiftwidth=4
+
+set cursorline
+set ruler
+set number
+set autoread
+
+set ignorecase
+set incsearch
+set hlsearch
+set fileencodings=uft-8,gbk
+"set helplang=cn
+set foldmethod=syntax "zo zc zr zm zj zk
+"}
+
+"conf for tabs
+"let mapleader=','
+"nnoremap <C-l> gt
+"nnoremap <C-h> gT
+"nnoremap <leader>t:tabe<CR>
+
+"conf for plugins{{
+
+"}}
+set nocompatible
+set history=100
+set smartindent
+set cindent
+set softtabstop=4
+set mouse=a
