@@ -1,6 +1,6 @@
 
 syntax enable
-set background=dark
+"set background=dark
 "let g:solarized_termcolors=256
 colorscheme solarized
 "colorscheme=evening
@@ -12,8 +12,8 @@ set backspace=2
 set showmatch
 set laststatus=2
 
-set expandtab
-set tabstop=4
+"set expandtab
+"set tabstop=4
 set shiftwidth=4
 
 set cursorline
@@ -42,5 +42,5 @@ set nocompatible
 set history=100
 set smartindent
 set cindent
-set softtabstop=4
-set mouse=a
+"set softtabstop=4
+"set mouse=a
