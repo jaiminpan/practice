@@ -18,7 +18,8 @@
 #define LEVEL_ERR 2
 //#include <stddef.h>
 //#include <malloc.h>
-int
+
+void
 logit(int a, int level, const char* msg)
 {
 	printf(msg);
@@ -100,7 +101,8 @@ get_mac_addr(void)
 	return 0;
 }
 
-int main(int argc, char* argv[])
+int
+main(int argc, char* argv[])
 {
 	get_mac_addr();
 

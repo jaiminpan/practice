@@ -15,6 +15,7 @@
 
 #include <errno.h>
 
+static char *progname = "getmac";
 
 struct
 {
@@ -37,24 +38,6 @@ void Utils_PrintMAC(void);
 void Utils_PrintIP(void);
 void Utils_PrintMTU(void);
 void Utils_PrintBCMask(void);
-
-int
-main(int argc, char **argv)
-{
-	if (argc != 2)
-	{
-		fprintf(stderr,"usage: <command> <devicename>\n");
-		exit(1);
-	}
-	Utils_EthInit(argv[1]);
-
-	Utils_EthGetMAC();
-	Utils_EthGetIP();
-	Utils_EthGetMTU();
-	Utils_EthGetBCMask();
-
-	return 0;
-}
 
 void
 Utils_EthInit(const char *devname)
@@ -177,5 +160,39 @@ void
 Utils_PrintBCMask(void)
 {
 	printf("> BroadCast address: %s\n", inet_ntoa(local_info.bcast));
+}
+
+void
+help(const char* progname)
+{
+	printf("Usage:\n  %s [OPTION]...\n\n", progname);
+	printf("Options:\n");
+	printf("   <devicename>     Device name.\n");
+	printf("\n");
+
+	printf("Example:\n  %s", progname);
+	printf(" lo");
+	printf("\n");
+}
+
+int
+main(int argc, char **argv)
+{
+	progname = argv[0];
+
+	if (argc != 2)
+	{
+		help(argv[0]);
+		exit(1);
+	}
+
+	Utils_EthInit(argv[1]);
+
+	Utils_EthGetMAC();
+	Utils_EthGetIP();
+	Utils_EthGetMTU();
+	Utils_EthGetBCMask();
+
+	return 0;
 }
 

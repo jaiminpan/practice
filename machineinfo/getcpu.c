@@ -61,7 +61,8 @@ get_cpu_id()
 }
 
 
-int main(int argc, char* argv[])
+int
+main(int argc, char* argv[])
 {
 	get_cpu_id();
 	printf ("x86_model_id = %s\n", cpu_info.x86_model_id);
