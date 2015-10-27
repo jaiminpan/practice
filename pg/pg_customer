@@ -1,0 +1,158 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#导入日志及pg模块
+import sys
+import getopt
+import logging
+import logging.config
+import pg
+
+#日志配置文件名
+LOG_FILENAME = 'logging.conf'
+
+#日志语句提示信息
+LOG_CONTENT_NAME = 'pg_log'
+
+def log_init(log_config_filename, logname):
+    '''
+    Function:日志模块初始化函数
+    Input：log_config_filename:日志配置文件名
+           lognmae:每条日志前的提示语句
+    Output: logger
+    '''
+    logging.config.fileConfig(log_config_filename)
+    logger = logging.getLogger(logname)
+    return logger
+
+def operate_postgre_tbl_product():
+    '''
+    Function:操作pg数据库函数
+    Input：NONE
+    Output: NONE
+    '''  
+    pgdb_logger.debug("operate_postgre_tbl_product enter...") 
+    
+    #连接数据库  
+    try:
+        pgdb_conn = pg.connect(dbname = 'postgres', host = '192.168.20.122', user = 'xxx', passwd = 'xxx')
+    except Exception, e:
+         print e.args[0]
+         pgdb_logger.error("conntect postgre database failed, ret = %s" % e.args[0])    
+         return    
+     
+    pgdb_logger.info("conntect postgre database(kevin_test) succ.") 
+        
+    #删除表
+    sql_desc = "DROP TABLE IF EXISTS tbl_product3;"
+    try:
+        pgdb_conn.query(sql_desc)
+    except Exception, e:
+        print 'drop table failed'
+        pgdb_logger.error("drop table failed, ret = %s" % e.args[0])
+        pgdb_conn.close()  
+        return
+    
+    pgdb_logger.info("drop table(tbl_product3) succ.") 
+  
+    #创建表
+    sql_desc = '''CREATE TABLE tbl_product3(
+        i_index INTEGER,
+        sv_productname VARCHAR(32)
+        );'''
+    try:    
+        pgdb_conn.query(sql_desc)
+    except Exception, e:
+        print 'create table failed'
+        pgdb_logger.error("create table failed, ret = %s" % e.args[0])
+        pgdb_conn.close()  
+        return        
+   
+    pgdb_logger.info("create table(tbl_product3) succ.") 
+      
+    #插入记录   
+    sql_desc = "INSERT INTO tbl_product3(sv_productname) values('apple')"
+    try:
+        pgdb_conn.query(sql_desc)
+    except Exception, e:
+        print 'insert record into table failed'
+        pgdb_logger.error("insert record into table failed, ret = %s" % e.args[0])
+        pgdb_conn.close()  
+        return    
+     
+    pgdb_logger.info("insert record into table(tbl_product3) succ.")     
+     
+    #查询表 1       
+    sql_desc = "select * from tbl_product3"
+    rows = pgdb_conn.query(sql_desc).dictresult()
+    for row in rows:
+        print row
+        pgdb_logger.info("%s", row) 
+ 
+    #关闭数据库连接     
+    pgdb_conn.close()       
+    pgdb_logger.debug("operate_sqlite3_tbl_product leaving...") 
+
+def operate_postgre_cmd(cur_sql):
+    '''
+    Function:操作pg数据库函数
+    Input：NONE
+    Output: NONE
+    '''  
+    pgdb_logger.debug("operate_postgre_tbl_product enter...") 
+    
+    #连接数据库  
+    try:
+        pgdb_conn = pg.connect(dbname = 'postgres', host = '192.168.20.122', user = 'xxx', passwd = 'xxx')
+    except Exception, e:
+         print e.args[0]
+         pgdb_logger.error("conntect postgre database failed, ret = %s" % e.args[0])    
+         return    
+     
+    #删除表
+    try:
+        rows = pgdb_conn.query(cur_sql).dictresult()
+        for row in rows:
+       	    print row
+            pgdb_logger.info("%s", row) 
+ 
+    except Exception, e:
+        print("%s", cur_sql)
+        pgdb_logger.error("%s failed, ret = %s", cur_sql, e.args[0])
+        pgdb_conn.close()  
+        return
+
+     #关闭数据库连接     
+    pgdb_conn.close()  
+
+def myusage():
+    print 'usage'
+
+if __name__ == '__main__': 
+                 
+    sql = None
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "he:", ["help", "execute="])
+    except getopt.GetoptError:
+        myusage()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            myusage()
+            sys.exit()             
+        elif opt in ("-e", "--execute"):
+            sql = arg
+
+    if not sql:
+        myusage()
+        sys.exit()
+
+    #初始化日志系统
+    pgdb_logger = log_init(LOG_FILENAME, LOG_CONTENT_NAME)   
+    
+    #操作数据库
+#    operate_postgre_tbl_product()
+    operate_postgre_cmd(sql)
+ 
+
