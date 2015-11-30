@@ -5,7 +5,7 @@
 CREATE OR REPLACE FUNCTION pg_ts_trans(words tsvector) RETURNS text AS
 $$
 BEGIN
-	return trim(both '''' from regexp_replace(strip(words)::text, ''' ''', '|', 'g'))
+	return trim(both '''' from regexp_replace(strip(words)::text, ''' ''', '|', 'g'));
 END
 $$ LANGUAGE plpgsql strict;
 
