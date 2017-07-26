@@ -1,0 +1,13 @@
+
+
+TABLEPRE="consumer_tag"
+IDXPRE="idx_consumer_tag"
+
+for ((i=0;i<64;i++))
+do
+    tablename="${TABLEPRE}_${i}"
+    idxname="${IDXPRE}_${i}_phone_num"
+    SQL="create unique index $idxname on ${tablename}(phone_num)"
+    #echo $SQL
+    psql -c "$SQL" consumer_tag
+done
