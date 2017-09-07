@@ -57,3 +57,38 @@ except:
     return 0
 $$ LANGUAGE plpythonu immutable SECURITY DEFINER
 
+-- gen uid by random with revert
+CREATE OR REPLACE FUNCTION py_gen_uid(phone text) RETURNS TEXT AS 
+$$
+    import random
+
+    if not phone.isdigit() or len(phone) != 11:
+        raise ValueError('phone number wrong for %s' % (phone))
+
+    reverse = int(phone[6::-1])
+    suffix = int(phone[7:11])
+
+    randomSeed = random.randint(0, 100);
+    if suffix < randomSeed:
+        if suffix <= 0:
+            randomSeed = 0
+        else:
+            randomSeed = random.randint(0, suffix);
+
+# { 0:#0{1}x} 
+# | | || | ||---  }  # End of format identifier
+# | | || | |----  x  # hexadecimal number, using lowercase letters for a-f
+# | | || |------ {1} # to a length of n characters (including 0x), defined by the second parameter
+# | | ||--------  0  # fill with zeroes
+# | | |---------  #  # use "0x" prefix
+# | |-----------  0: # first parameter
+# |-------------  {  # Format identifier
+    hex_int_reverse = "{0:0{1}x}".format(reverse - randomSeed, 6).upper()
+    hex_int_suffix = "{0:0{1}x}".format(suffix - randomSeed, 4).upper()
+    hex_randomSeed = "{0:0{1}x}".format(randomSeed, 2).upper()
+    return hex_int_reverse + hex_randomSeed + hex_int_suffix
+
+$$ LANGUAGE plpythonu immutable SECURITY DEFINER
+
+
+
