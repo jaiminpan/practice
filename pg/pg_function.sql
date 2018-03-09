@@ -34,7 +34,26 @@ $$
             return False
     except:
         return False
-$$ LANGUAGE plpythonu immutable SECURITY DEFINER;
+$$ LANGUAGE plpythonu strict immutable SECURITY DEFINER;
+
+CREATE or replace FUNCTION py_get_imei15(imei14 varchar) RETURNS TEXT AS 
+$$
+    retVal = None
+    imei14_str = str(imei14)
+    resultInt=0
+    for i in range(0, len(imei14_str), 2):
+        x = int(imei14_str[i])
+        y = int(imei14_str[i+1])
+        temp=y*2
+        b = temp if temp < 10 else temp - 9
+        resultInt = resultInt + (x + b)
+
+    resultInt %= 10 
+    resultInt = 0  if resultInt == 0  else 10-resultInt
+    retVal = imei14 + str(resultInt)
+
+    return retVal
+$$ LANGUAGE plpythonu strict immutable SECURITY DEFINER;
 
 -- 返回手机号运营商 1 移动 2 联通 3 电信 0 错误
 CREATE OR REPLACE FUNCTION py_get_carrier(phone text) RETURNS INT AS 
